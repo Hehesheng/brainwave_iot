@@ -1,0 +1,12 @@
+{
+    "folders": [
+        {
+            "path": "./"
+        }
+    ],
+    "settings": {
+        "files.associations": {
+        },
+        "terminal.integrated.shell.windows": "C:\\windows\\System32\\wsl.exe",
+    }
+}
