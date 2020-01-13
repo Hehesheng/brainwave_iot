@@ -4,7 +4,7 @@ import os
 
 def main():
     subprocess.run(["echo", "\n\r=============building============\n\r"])
-    subprocess.run(["scons", "-j6"])
+    subprocess.run(["scons", "-j12"])
     # subprocess.run(["echo", "\n\r=========汇编文件生成中==========\n\r"])
     os.system("/home/hehe/gcc-arm-none-eabi-8-2019-q3-update/bin/arm-none-eabi-objdump -d ./rt-thread.elf >./rtthread.asm")
     # subprocess.run(["echo", "\n\r=========解析ELF文件中==========\n\r"])

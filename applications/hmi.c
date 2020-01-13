@@ -36,7 +36,7 @@ static void hmi_thread(void *parameter)
 
     while (1)
     {
-        rt_sem_take(hmi->count, RT_WAITING_FOREVER);
+        rt_sem_take(&hmi->count, RT_WAITING_FOREVER);
         /* 读取一个字节 */
         rt_device_read(hmi->serial, 0, &ch, 1);
         if (hmi->stat == HMI_WAIT)
@@ -97,7 +97,7 @@ static void hmi_thread(void *parameter)
 static rt_err_t hmi_serial_input(rt_device_t dev, rt_size_t size)
 {
     /* 串口接收到数据后产生中断，调用此回调函数，然后发送接收信号量 */
-    rt_sem_release(hmi->count);
+    rt_sem_release(&hmi->count);
 
     return RT_EOK;
 }
@@ -105,6 +105,7 @@ static rt_err_t hmi_serial_input(rt_device_t dev, rt_size_t size)
 static int hmi_create(void)
 {
     rt_thread_t tid = RT_NULL;
+    rt_err_t ret;
 
     /* 创建hmi设备类 */
     hmi = (hmi_device *)rt_malloc(sizeof(hmi_device));
@@ -114,7 +115,7 @@ static int hmi_create(void)
     }
     else
     {
-        log_e("HMI device create fail.");
+        log_e("HMI device mem alloc fail.");
         return -1;
     }
     /* 打开串口 */
@@ -131,33 +132,18 @@ static int hmi_create(void)
         log_e("HMI serial is not finded.");
         return -1;
     }
-    /* 创建接收缓存 */
-    hmi->rx_buff = (char *)rt_malloc(RX_BUFF_SIZE);
-    if (hmi->rx_buff != RT_NULL)
-    {
-        rt_memset((void *)hmi->rx_buff, 0, RX_BUFF_SIZE);
-    }
-    else
-    {
-        log_e("HMI rx buf create fail.");
-        return -1;
-    }
-    /* 创建发送缓存 */
-    hmi->tx_buff = (char *)rt_malloc(TX_BUFF_SIZE);
-    if (hmi->tx_buff != RT_NULL)
-    {
-        rt_memset((void *)hmi->tx_buff, 0, TX_BUFF_SIZE);
-    }
-    else
-    {
-        log_e("HMI tx buf create fail.");
-        return -1;
-    }
     /* 创建信号量通信 */
-    hmi->count = rt_sem_create("shmi", 0, RT_IPC_FLAG_PRIO);
-    if (hmi->count == RT_NULL)
+    ret = rt_sem_init(&hmi->count, "shmi", 0, RT_IPC_FLAG_PRIO);
+    if (ret != RT_EOK)
     {
         log_e("HMI sem create fail.");
+        return -1;
+    }
+    /* 注册设备 */
+    ret = rt_device_register(&hmi->parent, "hmi", 0);
+    if (ret != RT_EOK)
+    {
+        log_e("HMI register fail.");
         return -1;
     }
     /* 创建线程 */

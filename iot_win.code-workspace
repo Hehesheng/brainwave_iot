@@ -6,6 +6,8 @@
     ],
     "settings": {
         "files.associations": {
+            "drv_config.h": "c",
+            "drv_usart.h": "c"
         },
         "terminal.integrated.shell.windows": "C:\\windows\\System32\\wsl.exe",
     }

@@ -16,12 +16,13 @@ enum hmi_device_status
 
 typedef struct hmi_device
 {
+    struct rt_device parent;
     rt_device_t serial;
     enum hmi_device_status stat;
-    rt_sem_t count;
-    char *rx_buff;
+    struct rt_semaphore count;
+    char rx_buff[FINSH_CMD_SIZE];
     uint32_t rx_len;
-    char *tx_buff;
+    char tx_buff[FINSH_CMD_SIZE];
     uint32_t tx_len;
 } hmi_device;
 

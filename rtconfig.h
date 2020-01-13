@@ -199,7 +199,7 @@
 /* RT_USING_POSIX_MMAP is not set */
 /* RT_USING_POSIX_TERMIOS is not set */
 /* RT_USING_POSIX_AIO is not set */
-/* RT_USING_MODULE is not set */
+#define RT_USING_MODULE
 
 /* Network */
 
@@ -391,9 +391,9 @@
 /* PKG_USING_ONENET_SAMPLE is not set */
 #define ONENET_USING_MQTT
 /* ONENET_USING_AUTO_REGISTER is not set */
-#define ONENET_INFO_DEVID "541342082"
-#define ONENET_INFO_AUTH "tgam2"
-#define ONENET_INFO_APIKEY "2g4FG7C=feNvz=pwhicfDz0m8OQ=" 
+#define ONENET_INFO_DEVID "528233832"
+#define ONENET_INFO_AUTH "tgam"
+#define ONENET_INFO_APIKEY "k=0=wkvq=gqPAJL8apDMjU=8l8o="
 #define ONENET_INFO_PROID "246925"
 #define ONENET_MASTER_APIKEY "kAR3RZZqprFCjQRr10OmQMsZG3k="
 #define PKG_USING_ONENET_LATEST_VERSION
