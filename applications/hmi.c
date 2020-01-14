@@ -1,7 +1,7 @@
 #include <msh.h>
 
-#include "hmi.h"
 #include "app_config.h"
+#include "hmi.h"
 
 #define LOG_TAG "hmi"        //该模块对应的标签。不定义时，默认：NO_TAG
 #define LOG_LVL LOG_LVL_DBG  //该模块对应的日志输出级别。不定义时，默认：调试级别
@@ -147,8 +147,7 @@ static int hmi_create(void)
         return -1;
     }
     /* 创建线程 */
-    tid = rt_thread_create("thmi", hmi_thread, RT_NULL, HMI_THREAD_STACK_SIZE, HMI_THREAD_PRIORITY,
-                           20);
+    tid = rt_thread_create("thmi", hmi_thread, RT_NULL, HMI_THREAD_STACK_SIZE, HMI_THREAD_PRIORITY, 20);
     if (tid != RT_NULL)
     {
         rt_thread_startup(tid);
@@ -170,13 +169,12 @@ int hmi_send(char *name, char *attribute, char *format, ...)
     rt_int32_t n;
     va_list args;
 
-    rt_sprintf(hmi->tx_buff, "%s.%s=", name, attribute);
-    rt_device_write(hmi->serial, 0, hmi->tx_buff, rt_strlen(hmi->tx_buff));
+    hmi->tx_len = rt_sprintf(hmi->tx_buff, "%s.%s=", name, attribute);
 
     va_start(args, format);
-    n = rt_vsnprintf(hmi->tx_buff, TX_BUFF_SIZE, format, args);
+    hmi->tx_len += rt_vsnprintf(hmi->tx_buff + hmi->tx_len, TX_BUFF_SIZE - hmi->tx_len, format, args);
     va_end(args);
-    rt_device_write(hmi->serial, 0, hmi->tx_buff, rt_strlen(hmi->tx_buff));
+    rt_device_write(hmi->serial, 0, hmi->tx_buff, hmi->tx_len);
     rt_device_write(hmi->serial, 0, HMI_CMD_END, rt_strlen(HMI_CMD_END));
 
     return n;
